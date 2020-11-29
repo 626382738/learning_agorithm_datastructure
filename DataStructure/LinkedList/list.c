@@ -25,6 +25,23 @@ int main()
 	traverse_list(pHead);
 	int len = length_list(pHead);
 	printf("the length of list is %d\n", len);
+
+//	sort_list(pHead);
+//	traverse_list(pHead);
+
+//	insert_list(pHead, 1, 999);
+//	traverse_list(pHead);
+
+	int val = 0;
+	if(delete_list(pHead, 4, &val))
+	{
+		printf("success delete %d \n", val);
+		traverse_list(pHead);
+	}
+	else
+	{
+		printf("fail delete \n");
+	}
 //	if( is_empty(pHead) )
 //	{
 //		printf("empty\n");
@@ -112,4 +129,83 @@ int length_list(PNODE pHead)
 	}
 
 	return len;
+}
+
+void sort_list(PNODE pHead)
+{
+	int i, j, t;
+	int len = 0;
+	len = length_list(pHead);
+	PNODE p, q;
+	for(i=0, p=pHead->pNext; i<len-1; ++i,p=p->pNext)
+	{
+		for(j=i+1, q=p->pNext; j<len; ++j, q=q->pNext)
+		{
+			if(p->data > q->data)	// similar to a[i] > a[j]
+			{
+				t = p->data;		// t = a[i];
+				p->data = q->data;	// a[i] = a[j];
+				q->data = t;		// a[j] = t;
+			}
+		}
+	}
+	return;
+
+}
+
+// insert a node befor pos, the value is val, pos start from 1
+bool insert_list(PNODE pHead, int pos, int val)
+{
+	int i = 0;
+	PNODE p = pHead;
+
+	while(p!=NULL && i<pos-1)
+	{
+		p = p->pNext;
+		++i;
+	}
+
+	if(i>pos-1 || p==NULL)
+	{
+		return false;
+	}
+
+	PNODE pNew = (PNODE)malloc(sizeof(NODE));
+	if(NULL == pNew)
+	{
+		printf("malloc fail\n");
+		exit(-1);
+	}
+	pNew->data = val;
+//	PNODE q = p->pNext;
+//	p->pNext = pNew;
+	pNew->pNext = p->pNext;
+	p->pNext = pNew;
+	return true;
+}
+
+bool delete_list(PNODE pHead, int pos, int *pVal)
+{
+	int i = 0;
+	PNODE p = pHead;
+
+	while(p->pNext!=NULL && i<pos-1)
+	{
+		p = p->pNext;
+		++i;
+	}
+
+	if(i>pos-1 || p->pNext==NULL)
+	{
+		return false;
+	}
+
+	PNODE q = p->pNext;
+	*pVal = q->data;
+	// delete a node after p
+	p->pNext = p->pNext->pNext;
+	free(q);
+	q = NULL;
+
+	return true;
 }
